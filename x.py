@@ -80,6 +80,9 @@ class Wordlist():
         self.index = {w: ~(BitfieldR(len(self.words), bitfield=k))
                       for w, k in idx.items()}
 
+    def freq(self, word:str) -> int:
+        return self.words.get(word, 0)
+
     def only(self, letters):
         def possible(l, w):
             l = collections.Counter(l)
@@ -96,7 +99,7 @@ class Wordlist():
                     ((w,f) for (w,f) in (
                         (wf[i]['w'],wf[i]['f']) for i in bit_positions)
                      if possible(letters, w)),
-                    key=lambda kv: (-len(kv[0]),kv[1]))])
+                    key=lambda kv: (-kv[1], -len(kv[0]),))])
 
 def words_from_freq(name):
     print("Loading words")
@@ -139,14 +142,6 @@ def load_words(name):
         logging.error("Error writing cache %s", cache, exc_info=True)
     return w
 
-words = load_words("freqs.json")
-
-from pprint import pprint
-pprint(len(words.words))
-keywords = [(word,freq) for word,freq in words.words.items() if 6 <= len(word) <= 8]
-print(len(keywords))
-#for keyword, freq in random.choices(keywords, k=10):
-#    print(words.only(keyword))
 
 Coord = t.Tuple[int, int]
 def x(p: Coord) -> int:
@@ -267,11 +262,17 @@ class Word(abc.ABC):
         else:
             return NotImplemented
 
-    def __lt__(self, other):
+    def __lt__(self, other: "Word"):
         if isinstance(other, Word):
             return self.word < other.word
         else:
             return NotImplemented
+
+    def json(self, *, shift: Coord = (0, 0)):
+        return dict(
+            d=self.__class__.__name__,
+            w=self.word,
+            s=tuple(i - o for i,o in zip(self.start, shift)))
 
 class Down(Word):
     def kw(self):
@@ -376,9 +377,23 @@ class Pad():
 @dataclasses.dataclass(frozen=True)
 class Crossword():
     size: int
+    letters: t.List[str]
     unused: t.List[str]
     text: Pad = dataclasses.field(default_factory=Pad)
     words: t.Tuple[Word] = dataclasses.field(default_factory=tuple)
+
+    def json(self, normalize=True):
+        r = self.text.rect()
+        if normalize:
+            shift = (r.w.lo, r.h.lo)
+        else:
+            shift = (0, 0)
+        return dict(
+            size=[r.w.len(), r.h.len()],
+            letters=self.letters,
+            words=[w.json(shift=shift) for w in self.words],
+            unused=self.unused[:],
+            )
 
     def place(self, word: str, direction: DirectionT) -> t.Generator["Crossword", None, None]:
         if self.words:
@@ -423,7 +438,7 @@ class Crossword():
             return NotImplemented
 
 class Renderer():
-    def __init__(self, *, debug=False):
+    def __init__(self, *, debug=False, raw=True):
         self.letters = {
             "a": "🄰 ",
             "b": "🄱 ",
@@ -467,6 +482,15 @@ class Renderer():
             "|": blank,
         })
 
+        if raw:
+            self.letters = {k: f"{k.upper()} "
+                            for k in self.letters}
+            if not debug:
+                self.letters.update((k, "  ") for k in " /-|")
+
+
+
+
 
     def render(self, pad: t.Union[Crossword, Pad]) -> str:
         if isinstance(pad, Crossword):
@@ -482,24 +506,25 @@ class Renderer():
 
 class Solver():
 
-    def solve(self, words: t.List[str], size: int, breadth:int = 50, limit:int = 5) -> t.List[Crossword]:
-        candidates = [Crossword(size=size, unused=words)]
+    def solve(self, *, letters: t.List[str], words: t.Dict[str, int], size: int, breadth:int = 50, limit:int = 5) -> t.List[Crossword]:
+        candidates = [Crossword(size=size, letters=letters, unused=list(words))]
         done : t.Set[Crossword] = set()
         while len(done) < limit:
             new_candidates : t.List[Crossword] = []
             for candidate in candidates:
                 if candidate.unused:
                     if not candidate.words:
+                        max_len = max(len(u) for u in candidate.unused)
                         samples = random.choices(
                             [w
                              for w in candidate.unused
-                             if len(w) == len(candidate.unused[0])],
+                             if len(w) == max_len],
                             k=5)
                         directions = [Across]
                     else:
                         samples = random.choices(
                             candidate.unused,
-                            weights=[len(w) ** 2
+                            weights=[words[w]
                                      for w in candidate.unused],
                             k=5)
                         directions = [Across, Down]
@@ -519,13 +544,28 @@ class Solver():
         return done[-limit:]
 
 
+words = load_words("freqs.json")
+
+from pprint import pprint
+pprint(len(words.words))
+keywords = [(word,freq) for word,freq in words.words.items() if 7 <= len(word) <= 9]
+print(len(keywords))
+#for keyword, freq in random.choices(keywords, k=10):
+#    print(words.only(keyword))
+
+
 w = "banana pogan minomet ata repa avto omara klobasa slalom pingvin gonoreja".split()
 k, _ = random.choice(keywords)
 _, w = words.only(k)
 print (_, w)
-c= Solver().solve(w, 10, 100)
+c= Solver().solve(letters=k,
+                  words={i:words.freq(i) for i in w},
+                  size=10,
+                  breadth=100,
+                  limit=1)
 
 for last in c:
+    print(json.dumps(last.json()))
     print("")
     print(Renderer(debug=False).render(last), last.score(), last.unused)
 
