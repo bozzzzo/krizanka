@@ -1,6 +1,6 @@
 body {
   font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px;
+  margin: 2px;
 }
 
 ol, ul {
@@ -54,12 +54,33 @@ button.go {
 .cell.available, .cell.used {
     border: 2px solid #999;
     display: inline-block;
-    margin-left: 5px;
-    font-size: 5vmin;
-    height: 6vmin;
-    width: 6vmin;
-
+    margin: 5mm;
+    font-size: 9vmin;
+    height: 10vmin;
+    width: 10vmin;
 }
+
+.word button {
+    float: right;
+}
+
+.guessbox {
+    display: flow;
+}
+.guessbox button {
+    font-size: 6vmin;
+    margin-left: 2mm;
+    margin-right: 2mm;
+}
+
+.guessbox button.go {
+    float: right;
+}
+
+.guessbox .actions {
+    display: flow;
+}
+
 .cell.used {
     background: #999;
 }
@@ -99,8 +120,6 @@ button.go {
 }
 
 .game {
-  display: flex;
-  flex-direction: row;
 }
 
 .game-info {

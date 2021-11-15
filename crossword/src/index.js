@@ -75,6 +75,16 @@ class Guessbox extends React.Component {
         this.clear();
     }
 
+    handleDelete() {
+        const last = this.state.value.slice(-1);
+        const letter = this.state.letters.find(l => (l.used && l.l == last))
+        this.setState({
+            ...this.state,
+            letters: this.state.letters.map(l => (l === letter) ? {...l, used:false} : l),
+            value: this.state.value.slice(0, -1)
+        })
+    }
+
     clear() {
         this.setState({
             ...this.state,
@@ -129,22 +139,23 @@ class Guessbox extends React.Component {
                             {l}
                         </span>
                     ))}
+                    <button onClick={(e)=>this.handleDelete()}>⏪</button>
                 </div>
                 <div className="chooser">
                     {this.state.letters.map((l,i) => this.renderLetter(l, i))}
                 </div>
-                <button onClick={(e) => this.handleClear()}
-                        enabled={this.state.value.length > 0}>
-                    Clear
-                </button>
-                <button onClick={(e) => this.handleShuffle()}>
-                    Shuffle
-                </button>
-                <button onClick={(e) => this.handleSubmit()}
-                        className="go"
-                        enabled={this.state.value.length > 2}>
-                    Go
-                </button>
+                <div className="actions">
+                    <button onClick={(e) => this.handleShuffle()}>
+                        Shuffle
+                    </button>
+                    <button onClick={(e) => this.handleClear()}>
+                        Clear
+                    </button>
+                    <button onClick={(e) => this.handleSubmit()}
+                            className="go">
+                        Go
+                    </button>
+                </div>
             </div>
         );
     }
@@ -256,38 +267,17 @@ class Game extends React.Component {
 
     renderPad() {
         return (
-            <table className="board">
-                <tbody>
-                    {this.state.rows.map(y => this.renderRow(y))}
-                </tbody>
-            </table>
+            <div className="board">
+                <table className="board">
+                    <tbody>
+                        {this.state.rows.map(y => this.renderRow(y))}
+                    </tbody>
+                </table>
+            </div>
         );
     }
 
     render() {
-        /*
-        const history = this.state.history;
-        const current = history[history.length - 1];
-        const winner = calculateWinner(current.squares);
-
-        const moves = history.map((step, move) => {
-            const desc = move ?
-                  'Go to move #' + move :
-                  'Go to game start';
-            return (
-                <li>
-                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
-                </li>
-            );
-        });
-
-        let status;
-        if (winner) {
-            status = 'Winner: ' + winner;
-        } else {
-            status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-        }
-        */
         const letters = Array.from(this.props.crossword.letters).slice().sort();
         return (
             <div className="game">
