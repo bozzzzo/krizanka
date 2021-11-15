@@ -1,18 +1,18 @@
 {
   "files": {
-    "main.css": "/krizanke/crossword/static/css/main.f1f2de42.chunk.css",
-    "main.js": "/krizanke/crossword/static/js/main.3332056b.chunk.js",
-    "main.js.map": "/krizanke/crossword/static/js/main.3332056b.chunk.js.map",
-    "runtime-main.js": "/krizanke/crossword/static/js/runtime-main.fe7ed5cc.js",
-    "runtime-main.js.map": "/krizanke/crossword/static/js/runtime-main.fe7ed5cc.js.map",
-    "static/js/2.ae0d67c8.chunk.js": "/krizanke/crossword/static/js/2.ae0d67c8.chunk.js",
-    "static/js/2.ae0d67c8.chunk.js.map": "/krizanke/crossword/static/js/2.ae0d67c8.chunk.js.map",
-    "index.html": "/krizanke/crossword/index.html",
-    "static/css/main.f1f2de42.chunk.css.map": "/krizanke/crossword/static/css/main.f1f2de42.chunk.css.map",
-    "static/js/2.ae0d67c8.chunk.js.LICENSE.txt": "/krizanke/crossword/static/js/2.ae0d67c8.chunk.js.LICENSE.txt"
+    "main.css": "/krizanka/static/css/main.f1f2de42.chunk.css",
+    "main.js": "/krizanka/static/js/main.3332056b.chunk.js",
+    "main.js.map": "/krizanka/static/js/main.3332056b.chunk.js.map",
+    "runtime-main.js": "/krizanka/static/js/runtime-main.7908f494.js",
+    "runtime-main.js.map": "/krizanka/static/js/runtime-main.7908f494.js.map",
+    "static/js/2.ae0d67c8.chunk.js": "/krizanka/static/js/2.ae0d67c8.chunk.js",
+    "static/js/2.ae0d67c8.chunk.js.map": "/krizanka/static/js/2.ae0d67c8.chunk.js.map",
+    "index.html": "/krizanka/index.html",
+    "static/css/main.f1f2de42.chunk.css.map": "/krizanka/static/css/main.f1f2de42.chunk.css.map",
+    "static/js/2.ae0d67c8.chunk.js.LICENSE.txt": "/krizanka/static/js/2.ae0d67c8.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.fe7ed5cc.js",
+    "static/js/runtime-main.7908f494.js",
     "static/js/2.ae0d67c8.chunk.js",
     "static/css/main.f1f2de42.chunk.css",
     "static/js/main.3332056b.chunk.js"
