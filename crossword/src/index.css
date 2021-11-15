@@ -13,12 +13,18 @@ ol, ul {
   display: table;
 }
 
+table, tbody, tr, td {
+    padding: 0px;
+    border: 0px;
+    margin: 0px;
+    background: #eee;
+}
+
 .cell {
     display: block;
     text-transform: uppercase;
     font-size: 7vmin;
     text-align: center;
-    margin: -2px;
     height: 8vmin;
     width: 8vmin;
     overflow: visible;
@@ -27,22 +33,38 @@ ol, ul {
     padding-bottom: 0px;
 }
 
-.cell.empty, .cell.solved{
-    border: 2px solid #999;
+button.go {
+    align-self: left;
 }
 
-.cell.available {
+.cell.void {
+    background: #eee;
+}
+
+.cell.empty, .cell.solved{
+    margin: -2px;
+    border: 2px solid #999;
+    background: #fff;
+}
+
+.letter {
+    text-transform: uppercase;
+    font-size: 5vmin;
+}
+.cell.available, .cell.used {
     border: 2px solid #999;
     display: inline-block;
     margin-left: 5px;
-}
-.cell.void {
-    background: #ddd;
-    border: 2px solid #ddd;
-}
+    font-size: 5vmin;
+    height: 6vmin;
+    width: 6vmin;
 
+}
+.cell.used {
+    background: #999;
+}
 .cell.guessed {
-    background: #f99;
+    background: #b99;
 }
 
 .cell {
@@ -77,7 +99,7 @@ ol, ul {
 }
 
 .game {
-  //display: flex;
+  display: flex;
   flex-direction: row;
 }
 

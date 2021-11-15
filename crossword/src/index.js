@@ -39,32 +39,113 @@ function Square(props) {
     );
 }
 
+function shuffle(array) {
+    array = array.slice();
+    for (let i = array.length - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
 class Guessbox extends React.Component {
     constructor(props) {
         super(props);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.input = React.createRef();
+        this.state = {
+            letters: props.letters.map((x) => ({l: x, used: false})),
+            value: ""
+        }
     }
 
-    handleSubmit(event) {
-        this.props.onGuess(this.input.current.value);
-        this.input.current.value = "";
-        event.preventDefault();
+    handleSubmit() {
+        if (this.state.value.length < 3)
+            return;
+        this.props.onGuess(this.state.value);
+        this.clear();
+    }
+
+    handleShuffle() {
+        this.setState({
+            ...this.state,
+            letters: shuffle(this.state.letters)
+        })
+    }
+
+    handleClear() {
+        this.clear();
+    }
+
+    clear() {
+        this.setState({
+            ...this.state,
+            letters: this.state.letters.map(l => ({...l, used:false})),
+            value: ""
+        })
+    }
+
+    handleClick(i) {
+        if (this.state.letters[i].used)
+            return;
+        const letters = this.state.letters.slice();
+        letters[i].used = true;
+        const value = this.state.value + letters[i].l
+        this.setState({
+            ...this.state,
+            letters: letters,
+            value: value
+        })
+    }
+
+    renderLetter(l, i) {
+        if (l.used) {
+            return (
+                <span key={i}
+                      className="cell used">
+                    {l.l}
+                </span>
+            );
+        } else {
+            return (
+                <span key={i}
+                      className="cell available"
+                      onClick={(e) => this.handleClick(i)}>
+                    {l.l}
+                </span>
+            );
+        }
     }
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <div>
-                    {this.props.letters.map((l,i)=>(
-                        <span key={i} className="cell available">
+            <div className="guessbox">
+                <div className="word">
+                    <span key="x"
+                          className="letter">
+                        :
+                    </span>
+                    {Array.from(this.state.value).map((l,i) => (
+                        <span key={i}
+                              className="letter">
                             {l}
                         </span>
                     ))}
                 </div>
-                <input type="text" ref={this.input} />
-                <input type="submit" value="Submit" />
-            </form>
+                <div className="chooser">
+                    {this.state.letters.map((l,i) => this.renderLetter(l, i))}
+                </div>
+                <button onClick={(e) => this.handleClear()}
+                        enabled={this.state.value.length > 0}>
+                    Clear
+                </button>
+                <button onClick={(e) => this.handleShuffle()}>
+                    Shuffle
+                </button>
+                <button onClick={(e) => this.handleSubmit()}
+                        className="go"
+                        enabled={this.state.value.length > 2}>
+                    Go
+                </button>
+            </div>
         );
     }
 }
@@ -118,12 +199,15 @@ class Game extends React.Component {
         if (hit) {
             pad = {...this.state.pad}
             guesses = guesses.concat([w])
+            history = history.concat([w])
             for(const [l, pos] of mapWord(hit)) {
                 pad[pos] = {
                     l:l,
                     guess:guesses.length
                 };
             }
+        } else {
+            history = history.concat([w])
         }
         const newState = {
             ...this.state,
