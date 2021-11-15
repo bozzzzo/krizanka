@@ -53,6 +53,7 @@ button.go {
 }
 .cell.available, .cell.used {
     border: 2px solid #999;
+    border-radius: 7px;
     display: inline-block;
     margin: 5mm;
     font-size: 9vmin;
@@ -86,6 +87,29 @@ button.go {
 }
 .cell.guessed {
     background: #b99;
+}
+
+.history ul {
+    list-style: none; /* Remove default bullets */
+}
+
+.history ul li::before {
+    font-weight: bold; /* If you want it to be bold */
+    display: inline-block; /* Needed to add space between the bullet and the text */
+    width: 2em; /* Also needed for space (tweak if needed) */
+    margin-left: -1em; /* Also needed for space (tweak if needed) */
+}
+
+.history ul li.guess::before {
+    content: "😎";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+}
+
+.history ul li.known::before {
+    content: "😄";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+}
+
+.history ul li.weird::before {
+    content: "🤔";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
 }
 
 .cell {

@@ -184,24 +184,6 @@ class Game extends React.Component {
         };
     }
 
-    /*
-    handleClick(i) {
-        const history = this.state.history;
-        const current = history[history.length - 1];
-        const squares = current.squares.slice();
-        if (calculateWinner(squares) || squares[i]) {
-            return;
-        }
-        squares[i] = this.state.xIsNext ? 'X' : 'O';
-        this.setState({
-            history: history.concat([{
-                squares: squares
-            }]),
-            xIsNext: !this.state.xIsNext,
-        });
-    }
-    */
-
     handleGuess(w) {
         let history = this.state.history;
         let guesses = this.state.guesses;
@@ -210,7 +192,7 @@ class Game extends React.Component {
         if (hit) {
             pad = {...this.state.pad}
             guesses = guesses.concat([w])
-            history = history.concat([w])
+            history = [{w:w, k:history.length, guess:true}].concat(history)
             for(const [l, pos] of mapWord(hit)) {
                 pad[pos] = {
                     l:l,
@@ -218,7 +200,8 @@ class Game extends React.Component {
                 };
             }
         } else {
-            history = history.concat([w])
+            const known = this.props.crossword.unused.find(x=>x===w);
+            history = [{w:w, k:history.length, guess:false, known:!!known}].concat(history)
         }
         const newState = {
             ...this.state,
@@ -292,7 +275,7 @@ class Game extends React.Component {
                 <div className="history">
                     <ul>
                         {this.state.history.map((w,i)=>(
-                            <li key={i}
+                            <li key={w.k}
                                 className={((w.guess) ? "guess" :
                                             ((w.known) ? "known" : "weird"))}>
                                 {w.w}
