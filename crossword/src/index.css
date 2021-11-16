@@ -85,9 +85,13 @@ button.go {
 .cell.used {
     background: #999;
 }
+.cell.hint {
+    background: #bb9;
+}
 .cell.guessed {
     background: #b99;
 }
+
 
 .history ul {
     list-style: none; /* Remove default bullets */

@@ -163,6 +163,7 @@ class Guessbox extends React.Component {
 
 
 
+
 function range(x) {
     let iter = [];
     for(let i = 0; i < x; i++) {
@@ -184,7 +185,30 @@ class Game extends React.Component {
         };
     }
 
+    isRepeatGuess(w) {
+        let history = this.state.history;
+        const isw = x => x.w === w;
+        const fnot = f => ((...args) => !f(...args))
+        const repeat = history.find(isw)
+        if (repeat) {
+            history = [
+                {
+                    ...repeat,
+                    repeat: 1 + (repeat.repeat || 0)}
+            ].concat(history.filter(fnot(isw)))
+            this.setState({
+                ...this.state,
+                history: history
+            });
+            return true;
+        }
+        return false;
+    }
+
     handleGuess(w) {
+        if (this.isRepeatGuess(w)) {
+            return;
+        }
         let history = this.state.history;
         let guesses = this.state.guesses;
         let pad = this.state.pad;
@@ -213,27 +237,54 @@ class Game extends React.Component {
         this.setState(newState);
     }
 
+    handleHint(x,y) {
+        let history = this.state.history;
+        let pad = {...this.state.pad};
+        let cell = pad[[x,y]];
+        const w = ("?" + x + ',' + y);
+        history = [{x:x, y:y,
+                    k:history.length,
+                    hint:cell.l,
+                    w: w
+                   }].concat(history);
+        pad[[x,y]] = {
+            ...cell,
+            hint: 1 + (cell.hint || 0)
+        };
+        this.setState({
+            ...this.state,
+            history: history,
+            pad: pad
+        });
+    }
+
     renderCell(x,y) {
         let p = this.state.pad[[x,y]];
         let k = x;
-        let c;
         let l;
+        let opt = {};
         if (p === undefined) {
-            c="cell void";
+            opt.className="cell void";
             l="";
-        } else if (p.guess === null) {
-            c="cell empty";
+        } else if (p.guess === null && (p.hint || 0) < this.props.hintLimit) {
+            opt.className="cell empty";
+            opt.onClick = e => this.handleHint(x,y);
             l=" ";
         } else if (p.guess < this.state.guesses.length) {
-            c="cell solved";
+            opt.className="cell solved";
             l=p.l;
         } else {
-            c="cell solved guessed";
+            opt.className="cell solved guessed";
             l=p.l;
         }
+
+        if (p && p.hint && p.hint >= this.props.hintLimit) {
+            opt.className += " hint";
+        }
+
         return (
             <td key={k}>
-                <div className={c}>
+                <div {...opt}>
                     <span>{l}</span>
                 </div>
             </td>
@@ -278,7 +329,10 @@ class Game extends React.Component {
                             <li key={w.k}
                                 className={((w.guess) ? "guess" :
                                             ((w.known) ? "known" : "weird"))}>
-                                {w.w}
+                                {w.w} {w.repeat &&
+                                       <span>
+                                           {"➰".repeat(w.repeat)}
+                                       </span>}
                             </li>))}
                     </ul>
                 </div>
@@ -348,7 +402,10 @@ class App extends React.Component {
                           {"size": [11, 10], "letters": "misti\u010den", "words": [{"d": "Across", "w": "ime", "s": [1, 4]}, {"d": "Down", "w": "imeti", "s": [9, 1]}, {"d": "Across", "w": "isti", "s": [1, 1]}, {"d": "Down", "w": "iti", "s": [7, 7]}, {"d": "Down", "w": "meni", "s": [3, 3]}, {"d": "Across", "w": "met", "s": [2, 8]}, {"d": "Down", "w": "mini", "s": [4, 0]}, {"d": "Across", "w": "misti\u010den", "s": [3, 3]}, {"d": "Down", "w": "miti", "s": [7, 0]}, {"d": "Down", "w": "nem", "s": [8, 5]}, {"d": "Down", "w": "nit", "s": [4, 6]}, {"d": "Across", "w": "niti", "s": [6, 1]}, {"d": "Across", "w": "ni\u010d", "s": [8, 5]}, {"d": "Down", "w": "sem", "s": [2, 6]}, {"d": "Across", "w": "sin", "s": [2, 6]}, {"d": "Down", "w": "tem", "s": [6, 3]}, {"d": "Down", "w": "tim", "s": [1, 3]}, {"d": "Across", "w": "\u010dim", "s": [6, 7]}], "unused": ["mest", "istem", "sit", "mesti", "smeti", "tenis", "meti", "te\u010di", "mit", "me\u010d", "time", "\u010dist", "sen", "se\u010di", "net", "\u010det", "sten", "eti", "sim", "set", "ten", "\u010deti", "\u010din", "sneti", "ti\u010d", "siten", "sine", "ste\u010di", "nesti", "sti", "eis", "mesi\u010d", "tin", "ini", "meniti", "mis", "semi", "smet", "se\u010d", "ni\u010de", "metin", "ne\u010dist", "sini\u010d", "snet", "tein", "ni\u010des", "ni\u010dti"]},
                           {"size": [11, 10], "letters": "zelenkast", "words": [{"d": "Down", "w": "elan", "s": [6, 2]}, {"d": "Across", "w": "las", "s": [7, 6]}, {"d": "Down", "w": "lek", "s": [7, 6]}, {"d": "Down", "w": "let", "s": [5, 0]}, {"d": "Down", "w": "leta", "s": [1, 3]}, {"d": "Across", "w": "nas", "s": [0, 6]}, {"d": "Down", "w": "nek", "s": [7, 0]}, {"d": "Down", "w": "neka", "s": [4, 4]}, {"d": "Down", "w": "seka", "s": [9, 6]}, {"d": "Down", "w": "stal", "s": [2, 6]}, {"d": "Across", "w": "tak", "s": [5, 8]}, {"d": "Down", "w": "tale", "s": [3, 1]}, {"d": "Across", "w": "teka", "s": [5, 2]}, {"d": "Down", "w": "tla", "s": [8, 4]}, {"d": "Across", "w": "tlak", "s": [0, 8]}, {"d": "Across", "w": "zelenkast", "s": [0, 4]}, {"d": "Across", "w": "zlat", "s": [0, 1]}], "unused": ["kazen", "san", "enak", "znak", "znesek", "senat", "last", "tek", "akt", "tal", "les", "lesa", "stekel", "zelena", "letna", "kan", "knez", "eta", "klet", "teza", "lasten", "stan", "sen", "ane", "slak", "zatekel", "sena", "net", "stena", "sten", "aneks", "steza", "tele", "tesna", "kal", "zelen", "lat", "ete", "kneza", "kant", "sel", "sla", "set", "lesen", "tesen", "len", "stalen", "nak", "tank", "kaz", "nesla", "lan", "natek", "ten", "zalet", "sak", "alt", "sela", "takle", "zeta", "zet", "steka", "lesk", "laz", "sekta", "klas", "nat", "nalet", "tenka", "teke", "klan", "zen", "skelet", "zaselek", "lene", "sekt", "sat", "tesla", "letak", "lak", "leska", "zel", "atek", "tenek", "ska", "laket", "eks", "enes", "kes", "kesa", "lenta", "steklen", "sek", "sene", "zelenka", "zal", "sanke", "asket", "slan", "tle", "ate", "kas", "teleks", "enka", "lesket", "sake", "kneset", "laks", "selen", "kenta", "skat", "zas", "zlet", "tlesk", "klen", "senta", "akne", "stanek", "alk", "stela", "skela", "lateks", "senka", "netek", "snet", "tnk", "stek", "naz", "kasne", "kelt", "tesa", "akel", "kasten", "tenk", "etan", "zek"]},
                           {"size": [11, 10], "letters": "invalid", "words": [{"d": "Down", "w": "ali", "s": [8, 3]}, {"d": "Across", "w": "dan", "s": [5, 7]}, {"d": "Down", "w": "din", "s": [2, 7]}, {"d": "Down", "w": "divan", "s": [9, 5]}, {"d": "Across", "w": "dlan", "s": [6, 1]}, {"d": "Across", "w": "dva", "s": [2, 2]}, {"d": "Across", "w": "ida", "s": [0, 1]}, {"d": "Down", "w": "ila", "s": [4, 0]}, {"d": "Down", "w": "ina", "s": [6, 3]}, {"d": "Across", "w": "invalid", "s": [3, 5]}, {"d": "Across", "w": "iva", "s": [7, 8]}, {"d": "Across", "w": "ivan", "s": [6, 3]}, {"d": "Down", "w": "lani", "s": [7, 5]}, {"d": "Down", "w": "liv", "s": [7, 1]}, {"d": "Down", "w": "nad", "s": [2, 0]}, {"d": "Across", "w": "vadi", "s": [0, 7]}, {"d": "Across", "w": "val", "s": [1, 4]}, {"d": "Down", "w": "vid", "s": [5, 5]}, {"d": "Down", "w": "vila", "s": [1, 4]}, {"d": "Down", "w": "vili", "s": [3, 2]}], "unused": ["via", "davi", "linda", "lan", "lina", "diva", "vdan", "dina", "idila", "naliv", "dia", "ini", "navil", "div", "dai", "vladin", "nav", "inda", "vani", "vidin", "lavin", "dil", "dila"]},
-                          {"size": [11, 10], "letters": "breznica", "words": [{"d": "Across", "w": "ane", "s": [6, 2]}, {"d": "Across", "w": "ban", "s": [1, 6]}, {"d": "Down", "w": "bar", "s": [5, 6]}, {"d": "Across", "w": "bazen", "s": [5, 6]}, {"d": "Across", "w": "bir", "s": [4, 1]}, {"d": "Across", "w": "brce", "s": [1, 3]}, {"d": "Down", "w": "brez", "s": [4, 1]}, {"d": "Across", "w": "cen", "s": [8, 1]}, {"d": "Down", "w": "cena", "s": [8, 1]}, {"d": "Down", "w": "enica", "s": [9, 5]}, {"d": "Across", "w": "izbranec", "s": [2, 8]}, {"d": "Down", "w": "niz", "s": [3, 6]}, {"d": "Down", "w": "rab", "s": [1, 1]}, {"d": "Down", "w": "rabi", "s": [6, 1]}, {"d": "Down", "w": "razen", "s": [7, 4]}, {"d": "Down", "w": "reza", "s": [2, 3]}, {"d": "Across", "w": "zbira", "s": [4, 4]}], "unused": ["neba", "izbran", "era", "riba", "bran", "ran", "car", "cia", "ina", "rez", "bric", "zec", "raz", "zbran", "baz", "bena", "izba", "zrnec", "rabin", "rac", "cezar", "zen", "brca", "zbir", "bre", "rena", "aren", "breza", "ric", "ica", "abe", "cri", "cin", "zenica", "ibe", "bizaren", "brica", "bia", "brna", "ibar", "caen", "brin", "nac", "brc", "arzen", "zebra", "bec", "riza", "ber", "cer", "zrnce", "erc", "naci", "cizar", "bac", "rezina", "ciba", "cian", "iba", "bira", "abi", "eia", "ribez", "benica", "zib", "nic", "brzin", "bez", "bazin", "brzina", "arni", "zar", "breznica", "ziba", "nerc", "naz", "beznica", "barin", "beza", "rin", "eci", "bri"]}
+                          {"size": [11, 10], "letters": "breznica", "words": [{"d": "Across", "w": "ane", "s": [6, 2]}, {"d": "Across", "w": "ban", "s": [1, 6]}, {"d": "Down", "w": "bar", "s": [5, 6]}, {"d": "Across", "w": "bazen", "s": [5, 6]}, {"d": "Across", "w": "bir", "s": [4, 1]}, {"d": "Across", "w": "brce", "s": [1, 3]}, {"d": "Down", "w": "brez", "s": [4, 1]}, {"d": "Across", "w": "cen", "s": [8, 1]}, {"d": "Down", "w": "cena", "s": [8, 1]}, {"d": "Down", "w": "enica", "s": [9, 5]}, {"d": "Across", "w": "izbranec", "s": [2, 8]}, {"d": "Down", "w": "niz", "s": [3, 6]}, {"d": "Down", "w": "rab", "s": [1, 1]}, {"d": "Down", "w": "rabi", "s": [6, 1]}, {"d": "Down", "w": "razen", "s": [7, 4]}, {"d": "Down", "w": "reza", "s": [2, 3]}, {"d": "Across", "w": "zbira", "s": [4, 4]}], "unused": ["neba", "izbran", "era", "riba", "bran", "ran", "car", "cia", "ina", "rez", "bric", "zec", "raz", "zbran", "baz", "bena", "izba", "zrnec", "rabin", "rac", "cezar", "zen", "brca", "zbir", "bre", "rena", "aren", "breza", "ric", "ica", "abe", "cri", "cin", "zenica", "ibe", "bizaren", "brica", "bia", "brna", "ibar", "caen", "brin", "nac", "brc", "arzen", "zebra", "bec", "riza", "ber", "cer", "zrnce", "erc", "naci", "cizar", "bac", "rezina", "ciba", "cian", "iba", "bira", "abi", "eia", "ribez", "benica", "zib", "nic", "brzin", "bez", "bazin", "brzina", "arni", "zar", "breznica", "ziba", "nerc", "naz", "beznica", "barin", "beza", "rin", "eci", "bri"]},
+                          {"size": [10, 10], "letters": "dihanje", "words": [{"d": "Down", "w": "ane", "s": [2, 4]}, {"d": "Down", "w": "dah", "s": [6, 5]}, {"d": "Down", "w": "dai", "s": [4, 0]}, {"d": "Down", "w": "dan", "s": [3, 2]}, {"d": "Down", "w": "dej", "s": [1, 2]}, {"d": "Down", "w": "dih", "s": [3, 6]}, {"d": "Across", "w": "dihanje", "s": [3, 2]}, {"d": "Down", "w": "hej", "s": [8, 0]}, {"d": "Down", "w": "hja", "s": [5, 2]}, {"d": "Down", "w": "ideja", "s": [8, 4]}, {"d": "Down", "w": "ina", "s": [6, 0]}, {"d": "Across", "w": "jaden", "s": [5, 6]}, {"d": "Across", "w": "jan", "s": [1, 4]}, {"d": "Across", "w": "jed", "s": [1, 6]}, {"d": "Down", "w": "jen", "s": [1, 6]}, {"d": "Across", "w": "jih", "s": [7, 4]}, {"d": "Across", "w": "nad", "s": [7, 8]}, {"d": "Down", "w": "naj", "s": [7, 2]}, {"d": "Across", "w": "nehaj", "s": [1, 8]}], "unused": ["ide", "ida", "han", "edin", "dina", "din", "ajde", "ajd", "hajdi", "dia", "jin", "heda", "ned", "nih", "ajdi", "jad", "had", "haj", "nadih", "hajd", "naje", "hijena", "eia", "inda", "nja", "jah", "nihaj", "hinje", "hena", "jedan", "hajde", "hija", "dien", "inje"]},
+                          {"size": [10, 11], "letters": "pravljica", "words": [{"d": "Down", "w": "ali", "s": [8, 5]}, {"d": "Across", "w": "cilj", "s": [2, 9]}, {"d": "Across", "w": "cipra", "s": [1, 2]}, {"d": "Down", "w": "jar", "s": [5, 5]}, {"d": "Down", "w": "para", "s": [7, 0]}, {"d": "Across", "w": "pav", "s": [6, 3]}, {"d": "Across", "w": "pij", "s": [0, 7]}, {"d": "Down", "w": "pil", "s": [4, 7]}, {"d": "Down", "w": "prav", "s": [3, 2]}, {"d": "Across", "w": "pravi", "s": [4, 7]}, {"d": "Across", "w": "pravljica", "s": [0, 5]}, {"d": "Down", "w": "pri", "s": [6, 3]}, {"d": "Down", "w": "prvi", "s": [1, 4]}, {"d": "Across", "w": "val", "s": [6, 1]}, {"d": "Down", "w": "vic", "s": [1, 0]}, {"d": "Down", "w": "vir", "s": [4, 0]}], "unused": ["pravica", "par", "pari", "iva", "piva", "lica", "april", "palica", "raj", "vila", "alica", "vala", "plava", "vaja", "vilar", "lipa", "car", "vaj", "pila", "via", "prijava", "raja", "cia", "alija", "pliva", "liv", "vip", "ala", "cvi", "livar", "ila", "palac", "rac", "riva", "jara", "api", "prija", "cila", "raca", "rap", "lava", "aja", "rjav", "cap", "lira", "valj", "piv", "arija", "pir", "pala", "rapa", "pvc", "ric", "ica", "avla", "ara", "cri", "avra", "valjar", "pica", "rja", "cip", "privaja", "vari", "var", "vica", "pava", "ril", "ava", "plav", "pilar", "pira", "jaa", "aca", "lavra", "racija", "cal", "capri", "capa", "plac", "vrl", "rival", "pair", "piar", "palacij", "alva", "cipa", "japi", "arpa", "vpij", "pavji", "jav", "plavica", "paca", "ral", "lavrica", "laj", "avija", "cala", "parica", "ajvar", "pajac", "jaca", "vija"]},
+                          {"size": [10, 11], "letters": "prevlada", "words": [{"d": "Across", "w": "dala", "s": [4, 9]}, {"d": "Down", "w": "dar", "s": [7, 8]}, {"d": "Across", "w": "del", "s": [7, 8]}, {"d": "Down", "w": "dpa", "s": [7, 4]}, {"d": "Down", "w": "dva", "s": [8, 2]}, {"d": "Down", "w": "dve", "s": [8, 6]}, {"d": "Across", "w": "lep", "s": [2, 1]}, {"d": "Down", "w": "lepa", "s": [6, 1]}, {"d": "Down", "w": "lev", "s": [5, 4]}, {"d": "Across", "w": "per", "s": [0, 7]}, {"d": "Down", "w": "prav", "s": [4, 1]}, {"d": "Down", "w": "pred", "s": [2, 6]}, {"d": "Across", "w": "prevlada", "s": [2, 6]}, {"d": "Across", "w": "rad", "s": [0, 9]}, {"d": "Down", "w": "red", "s": [1, 3]}, {"d": "Across", "w": "reda", "s": [1, 3]}, {"d": "Down", "w": "val", "s": [5, 8]}, {"d": "Across", "w": "vlada", "s": [4, 4]}], "unused": ["padel", "rada", "par", "vred", "real", "vera", "para", "predal", "led", "leva", "drava", "eva", "pel", "predala", "rep", "era", "alpe", "vladar", "reala", "vala", "plava", "vel", "pare", "ved", "drva", "veda", "drev", "repa", "lada", "vre", "apel", "pravda", "pre", "ala", "ped", "ave", "reva", "ver", "pedal", "perla", "pav", "rap", "lava", "varda", "pera", "vedra", "rave", "vrela", "pad", "pala", "rapa", "delava", "avla", "ara", "area", "avra", "perl", "adler", "earl", "var", "pava", "preval", "deva", "prevala", "ava", "plav", "padar", "lavra", "apela", "lera", "vrl", "rape", "alva", "vrel", "areal", "arpa", "vpad", "drap", "vada", "ral", "dra", "vpadel", "pled", "drav", "adra"]}
                          ];
         const idx = Math.floor(Math.random() * crosswords.length);
         this.state = {
@@ -360,6 +417,7 @@ class App extends React.Component {
         return (
             <Game
                 crossword={this.state.crossword}
+                hintLimit={5}
             />
         )
     }
