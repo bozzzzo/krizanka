@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import { version } from '../package.json';
 
 const directions = {
     Down: start => (i => [start[0], start[1] + i]),
@@ -415,10 +416,15 @@ class App extends React.Component {
 
     render() {
         return (
-            <Game
-                crossword={this.state.crossword}
-                hintLimit={5}
-            />
+            <div>
+                <Game
+                    crossword={this.state.crossword}
+                    hintLimit={5}
+                />
+                <footer>
+                    v: {version}
+                </footer>
+            </div>
         )
     }
 }
