@@ -554,20 +554,41 @@ print(len(keywords))
 #    print(words.only(keyword))
 
 
+def add_to_crossword(c, fn=pathlib.Path("crossword/src/static.js")):
+    marker = "### insert marker ###"
+    with fn.open("r") as f:
+        static = f.read()
+    if marker not in static:
+        raise ValueError("No marker in "+fn)
+    parts = list(static.partition(marker))
+    parts[1:1] = [json.dumps(c.json()), ",\n"]
+    static = "".join(parts)
+    tfn = fn.with_suffix(".tmp")
+    try:
+        with tfn.open("w") as f:
+            f.write(static)
+        tfn.rename(fn)
+    finally:
+        if tfn.is_file():
+            tfn.unlink()
+    print("Added to", fn)
+
+
+def weight(w):
+    return words.freq(w) if len(w) > 3 else 1
+
 w = "banana pogan minomet ata repa avto omara klobasa slalom pingvin gonoreja".split()
 k, _ = random.choice(keywords)
 _, w = words.only(k)
 print (_, w)
 c= Solver().solve(letters=k,
-                  words={i:words.freq(i) for i in w},
+                  words={i:weight(i) for i in w},
                   size=10,
                   breadth=100,
                   limit=1)
 
 for last in c:
-    print(json.dumps(last.json()))
-    print("")
-    print(Renderer(debug=False).render(last), last.score(), last.unused)
+    print(Renderer(debug=False).render(last))
 
 #  with open("check.csv", "w") as fd:
 #      import csv
