@@ -555,7 +555,7 @@ print(len(keywords))
 
 
 def add_to_crossword(c, fn=pathlib.Path("crossword/src/static.js")):
-    marker = "### insert marker ###"
+    marker = "/// insert marker ///"
     with fn.open("r") as f:
         static = f.read()
     if marker not in static:
