@@ -589,6 +589,7 @@ c= Solver().solve(letters=k,
 
 for last in c:
     print(Renderer(debug=False).render(last))
+    add_to_crossword(last)
 
 #  with open("check.csv", "w") as fd:
 #      import csv
