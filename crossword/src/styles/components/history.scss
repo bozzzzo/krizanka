@@ -1,0 +1,38 @@
+.c-history {
+  position: fixed;
+  z-index: 10;
+  bottom: 45px;
+  left: 0;
+  right: 0;
+  padding: 24px;
+  background-color: var(--c-primary);
+  box-shadow: 0 -8px 8px var(--c-black-10);
+  color: #fff;
+
+  ul {
+    position: relative;
+    li {
+      padding: 4px 0;
+      &.guess::before {
+        content: "😎 ";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+      }
+      &.known::before {
+        content: "😄 ";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+      }
+      &.weird::before {
+        content: "🤔 ";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+      }
+
+      &.app-version {
+        position: absolute;
+        bottom: 2px;
+        right: 0;
+        font-family: monospace;
+        font-size: 10px;
+        color: var(--c-white-50);
+      }
+    }
+  }
+
+
+}

@@ -1,155 +1,54 @@
-body {
-  font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 2px;
-}
 
-ol, ul {
-  padding-left: 30px;
-}
+/*.cell {*/
+    /*display: block;*/
+    /*text-transform: uppercase;*/
+    /*font-size: 7vmin;*/
+    /*text-align: center;*/
+    /*height: 8vmin;*/
+    /*width: 8vmin;*/
+    /*overflow: visible;*/
+    /*padding: 0px;*/
+/*}*/
 
-.boxard-row:after {
-  clear: both;
-  content: "";
-  display: table;
-}
-
-table, tbody, tr, td {
-    padding: 0px;
-    border: 0px;
-    margin: 0px;
-    background: #eee;
-}
-
-.cell {
-    display: block;
-    text-transform: uppercase;
-    font-size: 7vmin;
-    text-align: center;
-    height: 8vmin;
-    width: 8vmin;
-    overflow: visible;
-    padding: 0px;
-    padding-left: 0px;
-    padding-bottom: 0px;
-}
-
-button.go {
-    align-self: left;
-}
-
-.cell.void {
-    background: #eee;
-}
-
-.cell.empty, .cell.solved{
-    margin: -2px;
-    border: 2px solid #999;
-    background: #fff;
-}
-
-.letter {
-    text-transform: uppercase;
-    font-size: 5vmin;
-}
-.cell.available, .cell.used {
-    border: 2px solid #999;
-    border-radius: 7px;
-    display: inline-block;
-    margin: 5mm;
-    font-size: 9vmin;
-    height: 10vmin;
-    width: 10vmin;
-}
-
-.word button {
-    float: right;
-}
-
-.guessbox {
-    display: flow;
-}
-.guessbox button {
-    font-size: 6vmin;
-    margin-left: 2mm;
-    margin-right: 2mm;
-}
-
-.guessbox button.go {
-    float: right;
-}
-
-.guessbox .actions {
-    display: flow;
-}
-
-.cell.used {
-    background: #999;
-}
-.cell.hint {
-    background: #bb9;
-}
-.cell.guessed {
-    background: #b99;
-}
+/*.cell.empty {*/
+  /*background-color: var(--c-secondary);*/
+/*}*/
 
 
-.history ul {
-    list-style: none; /* Remove default bullets */
-}
+/*.cell.void {*/
+    /*!*background: #eee;*!*/
+/*}*/
 
-.history ul li::before {
-    font-weight: bold; /* If you want it to be bold */
-    display: inline-block; /* Needed to add space between the bullet and the text */
-    width: 2em; /* Also needed for space (tweak if needed) */
-    margin-left: -1em; /* Also needed for space (tweak if needed) */
-}
+/*.cell.empty, .cell.solved {*/
+  /*margin: 1.5px;*/
+  /*border-radius: 2px;*/
+/*}*/
 
-.history ul li.guess::before {
-    content: "😎";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
-}
+/*.cell.available, .cell.used {*/
+    /*border: 2px solid #999;*/
+    /*border-radius: 7px;*/
+    /*display: inline-block;*/
+    /*margin: 5mm;*/
+    /*font-size: 9vmin;*/
+    /*height: 10vmin;*/
+    /*width: 10vmin;*/
+/*}*/
 
-.history ul li.known::before {
-    content: "😄";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
-}
+/*.cell.used {*/
+    /*background: #999;*/
+/*}*/
+/*.cell.hint {*/
+    /*background: #bb9;*/
+/*}*/
+/*.cell.guessed {*/
+  /*background: var(--c-accent);*/
+  /*color: var(--c-primary);*/
+/*}*/
 
-.history ul li.weird::before {
-    content: "🤔";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
-}
 
-.cell {
-    text-transform: uppercase;
-}
+/*.cell {*/
+    /*text-transform: uppercase;*/
+/*}*/
 
-.status {
-  margin-bottom: 10px;
-}
 
-.square {
-  background: #fff;
-  border: 1px solid #999;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 34px;
-  margin-right: -1px;
-  margin-top: -1px;
-  padding: 0;
-  text-align: center;
-  width: 34px;
-}
 
-.square:focus {
-  outline: none;
-}
-
-.kbd-navigation .square:focus {
-  background: #ddd;
-}
-
-.game {
-}
-
-.game-info {
-  margin-left: 20px;
-}

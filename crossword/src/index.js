@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import './styles/main.scss';
 import { version } from '../package.json';
 import { getCrossword } from './static.js';
+import { iconKey, iconConfirm, iconList, iconShuffle, iconClear } from './Svg'
 
 const directions = {
     Down: start => (i => [start[0], start[1] + i]),
@@ -55,7 +57,8 @@ class Guessbox extends React.Component {
         super(props);
         this.state = {
             letters: props.letters.map((x) => ({l: x, used: false})),
-            value: ""
+            value: "",
+						renderList: false
         }
     }
 
@@ -72,6 +75,12 @@ class Guessbox extends React.Component {
             letters: shuffle(this.state.letters)
         })
     }
+    
+    handleRenderList() {
+    	this.setState({
+				renderList: !this.state.renderList
+			})
+		}
 
     handleClear() {
         this.clear();
@@ -111,53 +120,65 @@ class Guessbox extends React.Component {
     renderLetter(l, i) {
         if (l.used) {
             return (
-                <span key={i}
-                      className="cell used">
-                    {l.l}
+                <span key={i} className="c-letter c-letter--used">
+									<span className="c-letter__bg">{ iconKey() }</span>
+									<span className="c-letter__letter">{l.l}</span>
                 </span>
             );
         } else {
             return (
-                <span key={i}
-                      className="cell available"
-                      onClick={(e) => this.handleClick(i)}>
-                    {l.l}
+                <span key={i} className="c-letter c-letter--unused" onClick={(e) => this.handleClick(i)}>
+									<span className="c-letter__bg">{ iconKey() }</span>
+									<span className="c-letter__letter">{l.l}</span>
                 </span>
             );
         }
     }
+    
+    renderWordList() {
+    	return <div className="c-word-list">
+				v: {version}
+			</div>
+		}
 
     render() {
         return (
-            <div className="guessbox">
-                <div className="word">
-                    <span key="x"
-                          className="letter">
-                        :
-                    </span>
-                    {Array.from(this.state.value).map((l,i) => (
-                        <span key={i}
-                              className="letter">
-                            {l}
-                        </span>
-                    ))}
-                    <button onClick={(e)=>this.handleDelete()}>⏪</button>
+            <div className="c-guessbox">
+                <div className="c-word">
+									{ this.state.value &&
+											<div className="c-word__container">
+												{Array.from(this.state.value).map((l,i) => (
+													<span key={i}>{l}</span>
+												))}
+												<button
+													className="c-word__clear-button"
+													onClick={(e)=>this.handleDelete()}>
+													{ iconClear() }
+												</button>
+											</div>
+											
+									}
                 </div>
-                <div className="chooser">
+                <div className="c-chooser">
                     {this.state.letters.map((l,i) => this.renderLetter(l, i))}
                 </div>
-                <div className="actions">
-                    <button onClick={(e) => this.handleShuffle()}>
-                        Shuffle
-                    </button>
-                    <button onClick={(e) => this.handleClear()}>
-                        Clear
-                    </button>
-                    <button onClick={(e) => this.handleSubmit()}
-                            className="go">
-                        Go
-                    </button>
+                <div className="c-actions">
+                    
+                    {/*<button onClick={(e) => this.handleClear()} title="Clear">*/}
+                        {/*{ iconClear() }*/}
+                    {/*</button>*/}
+									<button onClick={ (e) => this.handleRenderList() }>
+										{ iconList() }
+									</button>
+									<button onClick={(e) => this.handleSubmit()} title="Go">
+										{ iconConfirm() }
+									</button>
+									<button onClick={(e) => this.handleShuffle()} title="Shuffle">
+										{ iconShuffle() }
+									</button>
                 </div>
+							
+								{ this.state.renderList && this.props.history }
             </div>
         );
     }
@@ -281,63 +302,61 @@ class Game extends React.Component {
         }
 
         if (p && p.hint && p.hint >= this.props.hintLimit) {
-            opt.className += " hint";
+            opt.className += "cell hint";
         }
 
         return (
-            <td key={k}>
-                <div {...opt}>
-                    <span>{l}</span>
-                </div>
-            </td>
+					<div {...opt} key={k}>
+							<span>{l}</span>
+					</div>
         );
     }
 
     renderRow(y) {
         return (
-            <tr className="board-row" key={y}>
+            <div className="row" key={y}>
                 {this.state.cols.map(x => this.renderCell(x,y))}
-            </tr>
+            </div>
         );
     }
 
     renderPad() {
+    	// todo converted from table
         return (
-            <div className="board">
-                <table className="board">
-                    <tbody>
-                        {this.state.rows.map(y => this.renderRow(y))}
-                    </tbody>
-                </table>
+            <div className="grid">
+								{this.state.rows.map(y => this.renderRow(y))}
             </div>
         );
     }
+    
+    renderHistory() {
+    	return <div className="c-history">
+				<ul>
+					{this.state.history.map((w,i)=>(
+						<li key={w.k}
+								className={((w.guess) ? "guess" :
+									((w.known) ? "known" : "weird"))}>
+							{w.w} {w.repeat &&
+						<span>
+                                           {"➰".repeat(w.repeat)}
+                                       </span>}
+						</li>))}
+						<li className="app-version">version: { version }</li>
+				</ul>
+			</div>
+		}
 
     render() {
         const letters = Array.from(this.props.crossword.letters).slice().sort();
         return (
             <div className="game">
                 {this.renderPad()}
-                <br/>
-                <div className="guessbox">
                     <Guessbox
                         letters={letters}
                         onGuess={(w) => this.handleGuess(w)}
+												history={this.renderHistory()}
                     />
-                </div>
-                <div className="history">
-                    <ul>
-                        {this.state.history.map((w,i)=>(
-                            <li key={w.k}
-                                className={((w.guess) ? "guess" :
-                                            ((w.known) ? "known" : "weird"))}>
-                                {w.w} {w.repeat &&
-                                       <span>
-                                           {"➰".repeat(w.repeat)}
-                                       </span>}
-                            </li>))}
-                    </ul>
-                </div>
+                
             </div>
         );
     }
@@ -350,17 +369,15 @@ class App extends React.Component {
             crossword: getCrossword()
         }
     }
-
+		
     render() {
+    	console.log(this.state.renderList)
         return (
             <div>
                 <Game
                     crossword={this.state.crossword}
                     hintLimit={5}
                 />
-                <footer>
-                    v: {version}
-                </footer>
             </div>
         )
     }

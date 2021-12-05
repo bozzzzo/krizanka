@@ -1,0 +1,18 @@
+.c-actions {
+  background-color: var(--c-black-10);
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 50px;
+
+  button {
+    width: 44px;
+    height: 44px;
+    background-color: transparent;
+    border: 0;
+    svg {
+      color: rgba(255,2552,255,.45);
+    }
+  }
+}
