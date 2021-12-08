@@ -13,6 +13,9 @@ const Pad = ({pad, rows, cols, hintLimit, handleHint, guesses, score}) => {
             opt.className="cell empty";
             opt.onClick = e => handleHint(x,y);
             l=" ";
+        } else if (p.guess === null && (p.hint || 0) >= hintLimit) {
+            opt.className="cell";
+            l=p.l;
         } else if (p.guess < guesses.length) {
             opt.className="cell solved";
             l=p.l;
@@ -22,7 +25,7 @@ const Pad = ({pad, rows, cols, hintLimit, handleHint, guesses, score}) => {
         }
 
         if (p && p.hint && p.hint >= hintLimit) {
-            opt.className += "cell hint";
+            opt.className += " hint";
         }
 
         return (

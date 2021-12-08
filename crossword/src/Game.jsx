@@ -97,6 +97,7 @@ class Game extends React.Component {
             score = {...score, guess: inc(score.guess)};
             for(const [l, pos] of mapWord(hit)) {
                 pad[pos] = {
+                    ...pad[pos],
                     l:l,
                     guess:guesses.length
                 };
