@@ -1,20 +1,22 @@
 {
   "files": {
-    "main.css": "/krizanka/static/css/main.0470e319.chunk.css",
-    "main.js": "/krizanka/static/js/main.0741b4ed.chunk.js",
-    "main.js.map": "/krizanka/static/js/main.0741b4ed.chunk.js.map",
-    "runtime-main.js": "/krizanka/static/js/runtime-main.7908f494.js",
-    "runtime-main.js.map": "/krizanka/static/js/runtime-main.7908f494.js.map",
-    "static/js/2.7a252f08.chunk.js": "/krizanka/static/js/2.7a252f08.chunk.js",
-    "static/js/2.7a252f08.chunk.js.map": "/krizanka/static/js/2.7a252f08.chunk.js.map",
+    "main.css": "/krizanka/static/css/main.9023f6a7.chunk.css",
+    "main.js": "/krizanka/static/js/main.57697fd4.chunk.js",
+    "main.js.map": "/krizanka/static/js/main.57697fd4.chunk.js.map",
+    "runtime-main.js": "/krizanka/static/js/runtime-main.06425b53.js",
+    "runtime-main.js.map": "/krizanka/static/js/runtime-main.06425b53.js.map",
+    "static/js/2.3daf658a.chunk.js": "/krizanka/static/js/2.3daf658a.chunk.js",
+    "static/js/2.3daf658a.chunk.js.map": "/krizanka/static/js/2.3daf658a.chunk.js.map",
     "index.html": "/krizanka/index.html",
-    "static/css/main.0470e319.chunk.css.map": "/krizanka/static/css/main.0470e319.chunk.css.map",
-    "static/js/2.7a252f08.chunk.js.LICENSE.txt": "/krizanka/static/js/2.7a252f08.chunk.js.LICENSE.txt"
+    "service-worker.js": "/krizanka/service-worker.js",
+    "service-worker.js.map": "/krizanka/service-worker.js.map",
+    "static/css/main.9023f6a7.chunk.css.map": "/krizanka/static/css/main.9023f6a7.chunk.css.map",
+    "static/js/2.3daf658a.chunk.js.LICENSE.txt": "/krizanka/static/js/2.3daf658a.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
-    "static/js/runtime-main.7908f494.js",
-    "static/js/2.7a252f08.chunk.js",
-    "static/css/main.0470e319.chunk.css",
-    "static/js/main.0741b4ed.chunk.js"
+    "static/js/runtime-main.06425b53.js",
+    "static/js/2.3daf658a.chunk.js",
+    "static/css/main.9023f6a7.chunk.css",
+    "static/js/main.57697fd4.chunk.js"
   ]
 }
