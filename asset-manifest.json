@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.css": "/krizanka/static/css/main.9023f6a7.chunk.css",
-    "main.js": "/krizanka/static/js/main.8f312958.chunk.js",
-    "main.js.map": "/krizanka/static/js/main.8f312958.chunk.js.map",
+    "main.css": "/krizanka/static/css/main.d5f5362f.chunk.css",
+    "main.js": "/krizanka/static/js/main.f50e24a8.chunk.js",
+    "main.js.map": "/krizanka/static/js/main.f50e24a8.chunk.js.map",
     "runtime-main.js": "/krizanka/static/js/runtime-main.06425b53.js",
     "runtime-main.js.map": "/krizanka/static/js/runtime-main.06425b53.js.map",
     "static/js/2.150f2141.chunk.js": "/krizanka/static/js/2.150f2141.chunk.js",
@@ -10,13 +10,13 @@
     "index.html": "/krizanka/index.html",
     "service-worker.js": "/krizanka/service-worker.js",
     "service-worker.js.map": "/krizanka/service-worker.js.map",
-    "static/css/main.9023f6a7.chunk.css.map": "/krizanka/static/css/main.9023f6a7.chunk.css.map",
+    "static/css/main.d5f5362f.chunk.css.map": "/krizanka/static/css/main.d5f5362f.chunk.css.map",
     "static/js/2.150f2141.chunk.js.LICENSE.txt": "/krizanka/static/js/2.150f2141.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.06425b53.js",
     "static/js/2.150f2141.chunk.js",
-    "static/css/main.9023f6a7.chunk.css",
-    "static/js/main.8f312958.chunk.js"
+    "static/css/main.d5f5362f.chunk.css",
+    "static/js/main.f50e24a8.chunk.js"
   ]
 }
