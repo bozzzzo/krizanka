@@ -1,6 +1,6 @@
 import React from "react";
 
-const Pad = ({pad, rows, cols, hintLimit, handleHint, guesses}) => {
+const Pad = ({pad, rows, cols, hintLimit, handleHint, guesses, score}) => {
     function renderCell(x,y) {
         let p = pad[[x,y]];
         let k = x;
@@ -43,9 +43,17 @@ const Pad = ({pad, rows, cols, hintLimit, handleHint, guesses}) => {
     function renderPad() {
     	// todo converted from table
         return (
-            <div className="grid">
-				{rows.map(y => renderRow(y))}
-            </div>
+            <>
+              <div className="grid">
+				        {rows.map(y => renderRow(y))}
+              </div>
+              <div className="score">
+                <span className="guess"> {score.guess} </span>
+                <span className="known"> {score.known} </span>
+                <span className="miss"> {score.miss} </span>
+                <span className="repeat"> {score.repeat} </span>
+              </div>
+            </>
         );
     }
 
