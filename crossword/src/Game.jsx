@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 import { version } from '../package.json';
 import Guessbox from './Guessbox';
 import Pad from "./Pad";
@@ -9,7 +9,7 @@ const directions = {
 };
 
 function mapDirection(word) {
-    return directions[word.d](word.s)
+    return directions[word.d](word.s);
 }
 
 function mapWord(word) {
@@ -56,14 +56,14 @@ class Game extends React.Component {
     isRepeatGuess(w) {
         let history = this.state.history;
         const isw = x => x.w === w;
-        const fnot = f => ((...args) => !f(...args))
-        const repeat = history.find(isw)
+        const fnot = f => ((...args) => !f(...args));
+        const repeat = history.find(isw);
         if (repeat) {
             history = [
                 {
                     ...repeat,
                     repeat: 1 + (repeat.repeat || 0)}
-            ].concat(history.filter(fnot(isw)))
+            ].concat(history.filter(fnot(isw)));
             this.setState({
                 ...this.state,
                 history: history
@@ -82,9 +82,9 @@ class Game extends React.Component {
         let pad = this.state.pad;
         const hit = this.props.crossword.words.find(x=>x.w===w);
         if (hit) {
-            pad = {...this.state.pad}
-            guesses = guesses.concat([w])
-            history = [{w:w, k:history.length, guess:true}].concat(history)
+            pad = {...this.state.pad};
+            guesses = guesses.concat([w]);
+            history = [{w:w, k:history.length, guess:true}].concat(history);
             for(const [l, pos] of mapWord(hit)) {
                 pad[pos] = {
                     l:l,
@@ -93,7 +93,12 @@ class Game extends React.Component {
             }
         } else {
             const known = this.props.crossword.unused.find(x=>x===w);
-            history = [{w:w, k:history.length, guess:false, known:!!known}].concat(history)
+            history = [{
+                w:w,
+                k:history.length,
+                guess:false,
+                known:!!known}
+                      ].concat(history);
         }
         const newState = {
             ...this.state,
@@ -127,36 +132,41 @@ class Game extends React.Component {
     }
     
     renderHistory() {
-    	return <div className="c-history">
-				<ul>
-					{this.state.history.map((w,i)=>(
-						<li key={w.k}
-								className={((w.guess) ? "guess" :
-									((w.known) ? "known" : "weird"))}>
-							{w.w} {w.repeat &&
-						<span>
-                                           {"➰".repeat(w.repeat)}
-                                       </span>}
-						</li>))}
-						<li className="app-version">version: { version }</li>
-				</ul>
-			</div>
+    	  return (
+            <div className="c-history">
+				      <ul>
+					      {this.state.history.map((w,i)=>(
+						        <li key={w.k}
+								        className={((w.guess) ? "guess" :
+									                  ((w.known) ? "known" : "weird"))}>
+							        {w.w} {w.repeat &&
+						                 <span>
+                               {"➰".repeat(w.repeat)}
+                             </span>}
+						        </li>))}
+						    <li className="app-version">version: { version }</li>
+				      </ul>
+			      </div>
+        );
 		}
 
     render() {
-        console.log(this.props.crossword)
+        console.log(this.props.crossword);
         const letters = Array.from(this.props.crossword.letters).slice().sort();
         return (
             <div style={{display: "flex", flexDirection:"column", justifyContent:"space-between", height: "100vh"}} className="game">
-                <Pad pad={this.state.pad} cols={this.state.cols} rows={this.state.rows} hintLimit={this.props.hintLimit} guesses={this.state.guesses} />
-                    <Guessbox
-                        propsLetters={letters}
-                        onGuess={(w) => this.handleGuess(w)}
-						history={this.renderHistory()}
-                    />
-                
+              <Pad
+                pad={this.state.pad}
+                cols={this.state.cols}
+                rows={this.state.rows}
+                hintLimit={this.props.hintLimit}
+                guesses={this.state.guesses} />
+              <Guessbox
+                propsLetters={letters}
+                onGuess={(w) => this.handleGuess(w)}
+						    history={this.renderHistory()} />
             </div>
         );
     }
 }
-export default Game
+export default Game;

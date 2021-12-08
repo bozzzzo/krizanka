@@ -1,4 +1,4 @@
-import React, {useState} from "react"
+import React, {useState} from "react";
 import PatternSelect from './PatternSelect';
 import Actions from "./Actions";
 
@@ -12,9 +12,9 @@ function shuffle(array) {
 }
 
 const Guessbox = ({propsLetters, history, onGuess}) => {
-    const [letters,setLetters] = useState(propsLetters.map((x) => ({l: x, used: false})))
-    const [value, setValue] = useState("")
-        
+    const [letters,setLetters] = useState(propsLetters.map((x) => ({l: x, used: false})));
+    const [value, setValue] = useState("");
+
     function handleSubmit(val) {
         if (val.length < 3)
             return;
@@ -23,7 +23,7 @@ const Guessbox = ({propsLetters, history, onGuess}) => {
     }
 
     function handleShuffle() {
-        setLetters(shuffle(letters))
+        setLetters(shuffle(letters));
     }
 
     function handleClear() {
@@ -31,8 +31,8 @@ const Guessbox = ({propsLetters, history, onGuess}) => {
     }
 
     function clear() {
-            setLetters(letters.map(l => ({...l, used:false})))
-            setValue("")
+        setLetters(letters.map(l => ({...l, used:false})));
+        setValue("");
     }
 
     return (
@@ -45,23 +45,23 @@ const Guessbox = ({propsLetters, history, onGuess}) => {
                                 <span key={i}>{l}</span>
                             ))}
                         </div>
-                            
+
                     }
                 </div>
                 <React.Fragment key={JSON.stringify(letters)}>
-                <PatternSelect 
-                    letters={letters} 
+                <PatternSelect
+                    letters={letters}
                     handleClear={handleClear}
                     setValue={setValue}
                     handleSubmit={handleSubmit}
                 />
                 </React.Fragment>
 
-                            
+
             </div>
             <Actions history={history} handleShuffle={handleShuffle} />
         </>
-    )
-}
+    );
+};
 
-export default Guessbox
+export default Guessbox;

@@ -1,4 +1,4 @@
-import React from "react"
+import React from "react";
 
 const Pad = ({pad, rows, cols, hintLimit, handleHint, guesses}) => {
     function renderCell(x,y) {
@@ -48,12 +48,12 @@ const Pad = ({pad, rows, cols, hintLimit, handleHint, guesses}) => {
             </div>
         );
     }
-    
+
     return (
         <>
             {renderPad()}
         </>
-    )
+    );
+};
 
-}
-export default Pad
+export default Pad;
