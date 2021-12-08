@@ -176,6 +176,7 @@ class Game extends React.Component {
                 cols={this.state.cols}
                 rows={this.state.rows}
                 hintLimit={this.props.hintLimit}
+                handleHint={(x,y) => this.handleHint(x,y)}
                 guesses={this.state.guesses}
                 score={this.state.score} />
               <Guessbox
