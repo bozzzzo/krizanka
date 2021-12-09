@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import { iconList, iconShuffle } from './Svg';
 
-const Actions = ({history, handleShuffle}) => {
+const Actions = ({history, handleShuffle, handleReload}) => {
     const [renderList, setRenderList] = useState(false);
 
 
@@ -17,6 +17,9 @@ const Actions = ({history, handleShuffle}) => {
 				    <button onClick={ (e) => handleRenderList() }>
 					    { iconList() }
 				    </button>
+            <button onClick={(e) => handleReload()} title="Reload">
+              Reload
+            </button>
 				    <button onClick={(e) => handleShuffle()} title="Shuffle">
 					    { iconShuffle() }
 				    </button>

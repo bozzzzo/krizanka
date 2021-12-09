@@ -110,7 +110,7 @@ class Game extends React.Component {
             history: history,
             pad: pad,
             guesses: guesses,
-            score: {...score, ...score_upadte}
+            score: {...score, ...score_update}
         };
         console.log(w, hits, newState);
         this.setState(newState);
@@ -172,6 +172,7 @@ class Game extends React.Component {
               <Guessbox
                 propsLetters={letters}
                 onGuess={(w) => this.handleGuess(w)}
+                handleReload={() => this.props.handleReload()}
 						    history={this.renderHistory()} />
             </div>
         );

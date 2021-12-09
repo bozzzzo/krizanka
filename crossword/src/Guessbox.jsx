@@ -11,7 +11,7 @@ function shuffle(array) {
     return array;
 }
 
-const Guessbox = ({propsLetters, history, onGuess}) => {
+const Guessbox = ({propsLetters, history, onGuess, handleReload}) => {
     const [letters,setLetters] = useState(propsLetters.map((x) => ({l: x, used: false})));
     const [value, setValue] = useState("");
 
@@ -59,7 +59,9 @@ const Guessbox = ({propsLetters, history, onGuess}) => {
 
 
             </div>
-            <Actions history={history} handleShuffle={handleShuffle} />
+          <Actions history={history}
+                   handleShuffle={handleShuffle}
+                   handleReload={handleReload} />
         </>
     );
 };
