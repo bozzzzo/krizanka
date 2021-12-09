@@ -31,4 +31,14 @@
     background-color: var(--c-accent);
     color: var(--c-primary);
   }
+
+  &.guessed {
+      background-color: var(--c-tertiary);
+      color: var(--c-primary);
+  }
+
+  &.hint {
+      background-color: var(--c-accent2);
+      color: var(--c-primary);
+  }
 }
