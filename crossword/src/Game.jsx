@@ -53,55 +53,50 @@ class Game extends React.Component {
         };
     }
 
-    isRepeatGuess(w) {
+    handleGuess(w) {
+        const is_w = x => x.w === w;
+        const fnot = f => ((...args) => !f(...args));
+
+        let history_entry;
         let history = this.state.history;
-        const isw = x => x.w === w;
-        const fnot = f => ((...args) => !f(...args))
-        const repeat = history.find(isw)
+        let guesses = this.state.guesses;
+        let pad = this.state.pad;
+        const hits = this.props.crossword.words.filter(is_w);
+        if (hits.length > 0) {
+            pad = {...this.state.pad};
+            guesses = guesses.concat([w]);
+            history_entry = {w:w, k:history.length, guess:true};
+            for(const hit of hits) {
+                for(const [l, pos] of mapWord(hit)) {
+                    pad[pos] = {
+                        l:l,
+                        guess:guesses.length
+                    };
+                }
+            }
+        } else {
+            const known = this.props.crossword.unused.find(x=>x===w);
+            history_entry = {w:w, k:history.length, guess:false, known:!!known};
+        }
+
+        const repeat = history.find(is_w);
         if (repeat) {
             history = [
                 {
                     ...repeat,
                     repeat: 1 + (repeat.repeat || 0)}
-            ].concat(history.filter(fnot(isw)))
-            this.setState({
-                ...this.state,
-                history: history
-            });
-            return true;
-        }
-        return false;
-    }
-
-    handleGuess(w) {
-        if (this.isRepeatGuess(w)) {
-            return;
-        }
-        let history = this.state.history;
-        let guesses = this.state.guesses;
-        let pad = this.state.pad;
-        const hit = this.props.crossword.words.find(x=>x.w===w);
-        if (hit) {
-            pad = {...this.state.pad}
-            guesses = guesses.concat([w])
-            history = [{w:w, k:history.length, guess:true}].concat(history)
-            for(const [l, pos] of mapWord(hit)) {
-                pad[pos] = {
-                    l:l,
-                    guess:guesses.length
-                };
-            }
+            ].concat(history.filter(fnot(is_w)));
         } else {
-            const known = this.props.crossword.unused.find(x=>x===w);
-            history = [{w:w, k:history.length, guess:false, known:!!known}].concat(history)
+            history = [history_entry].concat(history);
         }
+
         const newState = {
             ...this.state,
             history: history,
             pad: pad,
             guesses: guesses
         };
-        console.log(w, hit, newState);
+        console.log(w, hits, newState);
         this.setState(newState);
     }
 
@@ -125,7 +120,7 @@ class Game extends React.Component {
             pad: pad
         });
     }
-    
+
     renderHistory() {
     	return <div className="c-history">
 				<ul>
