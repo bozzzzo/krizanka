@@ -561,7 +561,7 @@ def add_to_crossword(c, fn=pathlib.Path("crossword/src/static.js")):
     if marker not in static:
         raise ValueError("No marker in "+fn)
     parts = list(static.partition(marker))
-    parts[1:1] = [json.dumps(c.json()), ",\n"]
+    parts[1:1] = [json.dumps(c, ensure_ascii=False), ",\n"]
     static = "".join(parts)
     tfn = fn.with_suffix(".tmp")
     try:
@@ -577,19 +577,32 @@ def add_to_crossword(c, fn=pathlib.Path("crossword/src/static.js")):
 def weight(w):
     return words.freq(w) if len(w) > 3 else 1
 
-w = "banana pogan minomet ata repa avto omara klobasa slalom pingvin gonoreja".split()
-k, _ = random.choice(keywords)
-_, w = words.only(k)
-print (_, w)
-c= Solver().solve(letters=k,
-                  words={i:weight(i) for i in w},
-                  size=10,
-                  breadth=100,
-                  limit=1)
+def do_some_crosswords():
+    w = "banana pogan minomet ata repa avto omara klobasa slalom pingvin gonoreja".split()
+    k, _ = random.choice(keywords)
+    _, w = words.only(k)
+    print (_, w)
+    c= Solver().solve(letters=k,
+                      words={i:weight(i) for i in w},
+                      size=10,
+                      breadth=100,
+                      limit=1)
 
-for last in c:
-    print(Renderer(debug=False).render(last))
-    add_to_crossword(last)
+    for last in c:
+        print(Renderer(debug=False).render(last))
+        add_to_crossword(last.json())
+
+
+def fish_for_wordlists():
+    with open("dictionaries", "w") as f:
+        for k, _ in keywords:
+            _, w = words.only(k)
+            f.write(" ".join(w))
+            f.write("\n")
+            print(k)
+
+if __name__ == '__main__':
+    fish_for_wordlists()
 
 #  with open("check.csv", "w") as fd:
 #      import csv
