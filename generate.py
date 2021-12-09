@@ -53,14 +53,12 @@ def solve (wiz, max_black=0, heuristic_level=0, seed=0, black_mode='DIAG'):
     while True:
         status = wiz.solver_step (max_time_ms=5000)
 
-        print (status)
+        # print (status)
 
         if status.fillRate == 100:
-            print ("SUCCESS !")
             ret = True
             break
         if status.fillRate == 0:
-            print ("FAILED !")
             ret = False
             break
 
@@ -68,7 +66,7 @@ def solve (wiz, max_black=0, heuristic_level=0, seed=0, black_mode='DIAG'):
     wiz.solver_stop ()
 
     tend = time.time ()
-    print ("Compute time: {:.01f}s".format (tend-tstart))
+    print (status.counter, status.fillRate, "Compute time: {:.01f}s".format (tend-tstart))
     return ret
 
 
@@ -120,16 +118,18 @@ def make_crossword(dictionary):
         n = wiz.dic_add_entries(dictionary)
 
         total = sum(map(len, dictionary)) + len(keyword)
-        side = min(int(math.sqrt(total // 3)), len(keyword))
-        size = (side, side)
-        wiz.grid_set_size(*size)
+        width = len(keyword)
+        height = min(total // (width * 3), width)
+        size = width * height
+        print(width, height)
+        wiz.grid_set_size(width, height)
 
-        if side >= len(keyword):
+        if width >= len(keyword):
             wiz.grid_write (0,1, keyword, 'H', add_block=True)
             wiz.grid_set_box (0, 0, 'BLACK')
             wiz.grid_set_box (1, 0, 'BLACK')
 
-        for max_black in range(side**2//5, side**2//4):
+        for max_black in range(size//5, size//2):
             for _ in range(50):
                 if solve(wiz, max_black=max_black, heuristic_level=-1, black_mode='ANY'):
                     break
@@ -166,7 +166,7 @@ def make_crossword(dictionary):
 
     repeats = [(w,c) for w, c in used.items() if c > 1]
 
-    crossword = dict(size=size,
+    crossword = dict(size=[width, height],
                      words=words,
                      letters=keyword.upper(),
                      unused=[w.upper() for w in dictionary if w not in used])
@@ -174,8 +174,7 @@ def make_crossword(dictionary):
     if repeats:
         print("Repeated words:", repeats)
     letters = sum(1 for line in lines for c in line if c in alphabet)
-    area = operator.mul(*size)
-    print(f"Utilization {letters} / {area} = {letters/area:.0%}")
+    print(f"Utilization {letters} / {size} = {letters/size:.0%}")
 
     return crossword
 
