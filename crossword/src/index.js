@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import './styles/main.scss';
 import { getCrossword } from './static.js';
-import "./styles/patternlock.css"
+import "./styles/patternlock.css";
 import Game from './Game';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
@@ -18,7 +18,6 @@ class App extends React.Component {
     }
 
     handleReload() {
-        alert('reload app');
         this.setState({
             ...this.state,
             crossword: getCrossword()

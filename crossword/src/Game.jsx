@@ -41,21 +41,33 @@ function range(x) {
 }
 
 function inc(x) {
-    return (x||0) + 1
+    return (x||0) + 1;
+}
+
+function stateFromCrossword(crossword) {
+    const words = new Set(crossword.words.map((w)=>w.w));
+    return {
+        history: [],
+        pad: calculatePad(crossword),
+        guesses: [],
+        score: { guess: 0, known: 0, miss: 0, repeat:0, words:words.size, unused:crossword.unused.length },
+        cols: range(crossword.size[0]),
+        rows: range(crossword.size[1]),
+        crossword: crossword,
+        letters: Array.from(crossword.letters).slice().sort()
+    };
 }
 
 class Game extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            history: [],
-            pad: calculatePad(props.crossword),
-            guesses: [],
-            score: { guess: 0, known: 0, missed: 0, repeat:0 },
-            cols: range(props.crossword.size[0]),
-            rows: range(props.crossword.size[1]),
-            crossword: props.crossword
-        };
+        this.state = stateFromCrossword(props.crossword);
+    }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.crossword !== this.props.crossword) {
+            this.setState(stateFromCrossword(this.props.crossword));
+        }
     }
 
     handleGuess(w) {
@@ -158,7 +170,6 @@ class Game extends React.Component {
 
     render() {
         console.log(this.props.crossword);
-        const letters = Array.from(this.props.crossword.letters).slice().sort();
         return (
             <div style={{display: "flex", flexDirection:"column", justifyContent:"space-between", height: "100vh"}} className="game">
               <Pad
@@ -170,10 +181,10 @@ class Game extends React.Component {
                 guesses={this.state.guesses}
                 score={this.state.score} />
               <Guessbox
-                propsLetters={letters}
+                propsLetters={this.state.letters}
                 onGuess={(w) => this.handleGuess(w)}
                 handleReload={() => this.props.handleReload()}
-						    history={this.renderHistory()} />
+						    renderHistory={() => this.renderHistory()} />
             </div>
         );
     }

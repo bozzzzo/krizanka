@@ -51,10 +51,10 @@ const Pad = ({pad, rows, cols, hintLimit, handleHint, guesses, score}) => {
 				        {rows.map(y => renderRow(y))}
               </div>
               <div className="score">
-                <span className="guess"> {score.guess} </span>
-                <span className="known"> {score.known} </span>
-                <span className="miss"> {score.miss} </span>
-                <span className="repeat"> {score.repeat} </span>
+                <span className="guess"> g {score.guess}/{score.words} </span>
+                <span className="known"> k {score.known}/{score.unused} </span>
+                <span className="miss"> m {score.miss} </span>
+                <span className="repeat"> r {score.repeat} </span>
               </div>
             </>
         );

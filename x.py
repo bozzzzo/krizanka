@@ -555,13 +555,17 @@ print(len(keywords))
 
 
 def add_to_crossword(c, fn=pathlib.Path("crossword/src/static.js")):
+    if isinstance(c, list):
+        l = c
+    else:
+        l = [c]
     marker = "/// insert marker ///"
     with fn.open("r") as f:
         static = f.read()
     if marker not in static:
         raise ValueError("No marker in "+fn)
     parts = list(static.partition(marker))
-    parts[1:1] = [json.dumps(c, ensure_ascii=False), ",\n"]
+    parts[1:1] = [json.dumps(c, ensure_ascii=False) for c in l] + [",\n"]
     static = "".join(parts)
     tfn = fn.with_suffix(".tmp")
     try:

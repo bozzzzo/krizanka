@@ -11,9 +11,15 @@ function shuffle(array) {
     return array;
 }
 
-const Guessbox = ({propsLetters, history, onGuess, handleReload}) => {
-    const [letters,setLetters] = useState(propsLetters.map((x) => ({l: x, used: false})));
+function lettersToState(letters) {
+    return letters.map((x) => ({l: x, used: false}));
+}
+
+const Guessbox = ({propsLetters, onGuess, handleReload, renderHistory}) => {
+    const [letters, setLetters] = useState(lettersToState(propsLetters));
     const [value, setValue] = useState("");
+
+    React.useEffect(()=>setLetters(lettersToState(propsLetters)), [propsLetters])
 
     function handleSubmit(val) {
         if (val.length < 3)
@@ -59,7 +65,7 @@ const Guessbox = ({propsLetters, history, onGuess, handleReload}) => {
 
 
             </div>
-          <Actions history={history}
+          <Actions renderHistory={renderHistory}
                    handleShuffle={handleShuffle}
                    handleReload={handleReload} />
         </>
