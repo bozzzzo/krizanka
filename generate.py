@@ -11,6 +11,9 @@ import random
 import re
 import time
 import sys
+import multiprocessing
+import threading
+
 
 from contextlib import contextmanager
 
@@ -66,22 +69,9 @@ def solve (wiz, max_black=0, heuristic_level=0, seed=0, black_mode='DIAG'):
     wiz.solver_stop ()
 
     tend = time.time ()
-    print (status.counter, status.fillRate, "Compute time: {:.01f}s".format (tend-tstart))
+    #print (status.counter, status.fillRate, "Compute time: {:.01f}s".format (tend-tstart))
     return ret
 
-
-def example_4():
-
-    with open("dictionaries") as f:
-        dicts = tuple(sorted(l.split()) for l in f)
-
-    dicts = random.sample(dicts, len(dicts))
-
-    
-    c = make_crossword(dicts[0])
-
-    if c:
-        add_to_crossword(c)
 
 
 @contextmanager
@@ -103,14 +93,14 @@ def make_crossword(dictionary):
 
     alphabet = "".join(sorted(functools.reduce(operator.or_, map(set, dictionary)))).upper()
 
-    print(f"Dictionary with {len(dictionary)} words uses alphabet '{alphabet}'")
+    # print(f"Dictionary with {len(dictionary)} words uses alphabet '{alphabet}'")
 
 
     dictionary = sorted(dictionary, key=len)
     dictionary, keyword = dictionary[:-1], dictionary[-1]
 
-    print(keyword)
-    print(dictionary)
+    # print(keyword)
+    # print(dictionary)
 
     with wizium_ctx(alphabet=alphabet) as wiz:
         # Load dictionary
@@ -118,16 +108,16 @@ def make_crossword(dictionary):
         n = wiz.dic_add_entries(dictionary)
 
         total = sum(map(len, dictionary)) + len(keyword)
-        width = len(keyword)
-        height = min(total // (width * 3), width)
+        width = min(max(int(math.sqrt(total / 2.5)), len(keyword)), 11)
+        height = min(int(total / (width * 2.5)), width)
         size = width * height
         print(width, height)
         wiz.grid_set_size(width, height)
 
         if width >= len(keyword):
             wiz.grid_write (0,1, keyword, 'H', add_block=True)
-            wiz.grid_set_box (0, 0, 'BLACK')
-            wiz.grid_set_box (1, 0, 'BLACK')
+        wiz.grid_set_box (0, 0, 'BLACK')
+        wiz.grid_set_box (1, 0, 'BLACK')
 
         for max_black in range(size//5, size//2):
             for _ in range(50):
@@ -137,6 +127,7 @@ def make_crossword(dictionary):
                 continue
             break
         else:
+            print("No solution for ", keyword, [width, height], dictionary)
             return None
 
         lines = wiz.grid_read()
@@ -174,10 +165,37 @@ def make_crossword(dictionary):
     if repeats:
         print("Repeated words:", repeats)
     letters = sum(1 for line in lines for c in line if c in alphabet)
-    print(f"Utilization {letters} / {size} = {letters/size:.0%}")
+    print("solution for ", keyword, [width, height], f"Utilization {letters} / {size} = {letters/size:.0%} repeats:{repeats}")
 
     return crossword
 
 
-example_4()
+stopping = False
+def stop(pool):
+    input()
+    global stopping
+    stopping = True
+
+def generate():
+
+    with open("dictionaries") as f:
+        dicts = tuple(sorted(l.split()) for l in f)
+
+    dicts = random.sample(dicts, len(dicts))
+
+    threading.Thread(target=stop, daemon=True).start()
+
+    with multiprocessing.Pool() as pool:
+
+        for c in pool.imap_unordered(make_crossword, dicts):
+            if stopping:
+                pool.close()
+                return
+            if c:
+                add_to_crossword(c)
+
+
+
+if __name__ == '__main__':
+    generate()
 
