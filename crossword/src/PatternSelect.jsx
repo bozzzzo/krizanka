@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from "react"
 import $ from "jquery"
 
-const PatternSelect = ({letters, handleClear, setValue, handleSubmit}) => {
+const PatternSelect = ({letters, onClear, setValue, onSubmit}) => {
     const moveEvent = 'touchstart mousedown touchmove mousemove'
     const svgns = 'http://www.w3.org/2000/svg'
   
@@ -52,7 +52,7 @@ const PatternSelect = ({letters, handleClear, setValue, handleSubmit}) => {
             svg.off(moveEvent, discoverDot)
             const pattern = getPattern()
             await setValue(pattern)
-            await handleSubmit(pattern)
+            await onSubmit(pattern)
             await clear();
             for (let i = 0; i < letters.length; i++){
                 document.getElementById(`letter_${i}`).setAttribute("fill", "var(--c-tertiary)")
@@ -68,7 +68,7 @@ const PatternSelect = ({letters, handleClear, setValue, handleSubmit}) => {
             svg.removeClass('success error')
             lines.empty()
             actives.empty()
-            handleClear()
+            onClear()
         }
 
         function preventDefault(e) {
@@ -205,7 +205,7 @@ const PatternSelect = ({letters, handleClear, setValue, handleSubmit}) => {
         }
 
     
-    }, [handleClear, handleSubmit, letters.length, setValue])
+    }, [onClear, onSubmit, letters.length, setValue])
     //eslint-disable-next-line react-hooks/exhaustive-deps
     useEffect(() => PatternLock("#lock") , [])
 

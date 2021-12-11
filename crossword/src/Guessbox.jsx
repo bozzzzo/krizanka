@@ -15,7 +15,7 @@ function lettersToState(letters) {
     return letters.map((x) => ({l: x, used: false}));
 }
 
-const Guessbox = ({propsLetters, onGuess, handleReload, renderHistory}) => {
+const Guessbox = ({propsLetters, onGuess, onReload, renderHistory}) => {
     const [letters, setLetters] = useState(lettersToState(propsLetters));
     const [value, setValue] = useState("");
 
@@ -57,17 +57,17 @@ const Guessbox = ({propsLetters, onGuess, handleReload, renderHistory}) => {
                 <React.Fragment key={JSON.stringify(letters)}>
                 <PatternSelect
                     letters={letters}
-                    handleClear={handleClear}
+                    onClear={handleClear}
                     setValue={setValue}
-                    handleSubmit={handleSubmit}
+                    onSubmit={handleSubmit}
                 />
                 </React.Fragment>
 
 
             </div>
           <Actions renderHistory={renderHistory}
-                   handleShuffle={handleShuffle}
-                   handleReload={handleReload} />
+                   onShuffle={handleShuffle}
+                   onReload={onReload} />
         </>
     );
 };

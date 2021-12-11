@@ -2,36 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import './styles/main.scss';
-import { getCrossword } from './static.js';
 import "./styles/patternlock.css";
-import Game from './Game';
+import GameLogic from './GameLogic';
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 
 
 
 class App extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            crossword: getCrossword()
-        };
-    }
-
-    handleReload() {
-        this.setState({
-            ...this.state,
-            crossword: getCrossword()
-        });
-    }
-
     render() {
         return (
             <div>
-                <Game
-                  crossword={this.state.crossword}
-                  handleReload={() => this.handleReload()}
-                  hintLimit={5}
-                />
+                <GameLogic hintLimit={5} />
             </div>
         );
     }
