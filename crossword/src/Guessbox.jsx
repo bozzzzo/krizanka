@@ -15,7 +15,7 @@ function lettersToState(letters) {
     return letters.map((x) => ({l: x, used: false}));
 }
 
-const Guessbox = ({propsLetters, onGuess, onReload, renderHistory}) => {
+const Guessbox = ({propsLetters, onGuess, onReload, renderHistory, elapsed}) => {
     const [letters, setLetters] = useState(lettersToState(propsLetters));
     const [value, setValue] = useState("");
 
@@ -63,7 +63,7 @@ const Guessbox = ({propsLetters, onGuess, onReload, renderHistory}) => {
                 />
                 </React.Fragment>
 
-
+              <span class="elapsed">{elapsed}</span>
             </div>
           <Actions renderHistory={renderHistory}
                    onShuffle={handleShuffle}

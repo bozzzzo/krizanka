@@ -24,7 +24,6 @@ class Game extends React.Component {
 		}
 
     render() {
-        console.log(this.props.crossword);
         return (
             <div style={{display: "flex", flexDirection:"column", justifyContent:"space-between", height: "100vh"}} className="game">
               <Pad
@@ -39,7 +38,8 @@ class Game extends React.Component {
                 propsLetters={this.props.letters}
                 onGuess={this.props.onGuess}
                 onReload={this.props.onReload}
-						    renderHistory={() => this.renderHistory()} />
+                renderHistory={() => this.renderHistory()}
+                elapsed={this.props.elapsed} />
             </div>
         );
     }

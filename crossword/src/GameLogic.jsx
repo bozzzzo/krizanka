@@ -47,10 +47,14 @@ const schema_migrations = {
     // each migration is keyed from older version and must produce either:
     // - the state for the next version, or
     // - null if migration is not possible
-    0: (state) => ({...state, schema: 1}), 
+    0: (state) => ({...state,
+                    schema: 1}),
+    1: (state) => ({...state,
+                    schema: 2,
+                    gameplay: {previous: 0, start: Date.now(), current: 0}}),
 };
 
-const state_schema_version = 1;
+const state_schema_version = 2;
 
 function validate_schema_migrations() {
     for (const i of range(state_schema_version)) {
@@ -81,6 +85,7 @@ function stateFromCrossword(crossword) {
         rows: range(crossword.size[1]),
         crossword: crossword,
         letters: Array.from(crossword.letters).slice().sort(),
+        gameplay: {previous: 0, start: Date.now(), current: 0},
         // see above for state schema changes
     };
 }
@@ -90,19 +95,24 @@ const STATE_KEY = 'game.state';
 function restoreState() {
     const store = window.localStorage;
     if (!store) {
-        return;
+        return undefined;
     }
     const ser = store.getItem(STATE_KEY);
     if (!ser) {
-        return;
+        return undefined;
     }
     if (!validate_schema_migrations()) {
-        return;
+        return undefined;
     }
     let state = JSON.parse(ser);
     while (state && state.schema < state_schema_version) {
         state = schema_migrations[state.schema](state);
     }
+    state = {...state,
+            gameplay: {
+                ...state.gameplay,
+                current: 0,
+                start: Date.now()}};
     return state;
 }
 
@@ -111,6 +121,11 @@ function saveState(state) {
     if (!store) {
         return;
     }
+    state = {...state,
+             gameplay: {
+                 previous: state.gameplay.previous + state.gameplay.current,
+                 current: 0
+             }};
     const ser = JSON.stringify(state);
     store.setItem(STATE_KEY, ser);
 }
@@ -119,6 +134,21 @@ class GameLogic extends React.Component {
     constructor(props) {
         super(props);
         this.state = restoreState() || stateFromCrossword(getCrossword());
+        setInterval(() => this.handleTick(), 1000);
+    }
+
+    handleTick() {
+        const state = this.state;
+        const elapsed = Math.floor((Date.now() - state.gameplay.start) / 1000);
+        if (elapsed != state.gameplay.current) {
+            this.setState({
+                ...state,
+                gameplay: {
+                    ...state.gameplay,
+                    current: elapsed
+                }
+            });
+        }
     }
 
     handleReload() {
@@ -209,15 +239,18 @@ class GameLogic extends React.Component {
 
 
     render() {
+
+        const state = this.state;
         return (
               <Game
-                pad={this.state.pad}
-                cols={this.state.cols}
-                rows={this.state.rows}
+                pad={state.pad}
+                cols={state.cols}
+                rows={state.rows}
                 hintLimit={this.props.hintLimit}
-                guesses={this.state.guesses}
-                score={this.state.score}
-                letters={this.state.letters}
+                guesses={state.guesses}
+                score={state.score}
+                letters={state.letters}
+                elapsed={state.gameplay.previous + state.gameplay.current}
                 onHint={(x,y) => this.handleHint(x,y)}
                 onGuess={(w) => this.handleGuess(w)}
                 onReload={() => this.handleReload()}

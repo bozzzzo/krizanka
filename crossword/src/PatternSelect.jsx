@@ -58,7 +58,7 @@ const PatternSelect = ({letters, onClear, setValue, onSubmit}) => {
                 document.getElementById(`letter_${i}`).setAttribute("fill", "var(--c-tertiary)")
             }
             
-            console.log(pattern)
+            // console.log(pattern)
         }
 
         function clear() {
