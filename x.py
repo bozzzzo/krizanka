@@ -548,8 +548,9 @@ words = load_words("freqs.json")
 
 from pprint import pprint
 pprint(len(words.words))
-keywords = [(word,freq) for word,freq in words.words.items() if 7 <= len(word) <= 9]
-print(len(keywords))
+def keywords(words=words):
+    return sorted((word,freq) for word,freq in words.words.items() if 7 <= len(word) <= 9)
+
 #for keyword, freq in random.choices(keywords, k=10):
 #    print(words.only(keyword))
 
@@ -583,7 +584,7 @@ def weight(w):
 
 def do_some_crosswords():
     w = "banana pogan minomet ata repa avto omara klobasa slalom pingvin gonoreja".split()
-    k, _ = random.choice(keywords)
+    k, _ = random.choice(keywords())
     _, w = words.only(k)
     print (_, w)
     c= Solver().solve(letters=k,
@@ -598,15 +599,19 @@ def do_some_crosswords():
 
 
 def fish_for_wordlists():
-    with open("dictionaries", "w") as f:
-        for k, _ in keywords:
+        for k, _ in keywords():
             _, w = words.only(k)
+            yield k, w
+
+def dump_wordlists(wl):
+    with open("dictionaries", "w") as f:
+        for k, w in fish_for_wordlists():
             f.write(" ".join(w))
             f.write("\n")
             print(k)
 
 if __name__ == '__main__':
-    fish_for_wordlists()
+    dump_wordlists()
 
 #  with open("check.csv", "w") as fd:
 #      import csv

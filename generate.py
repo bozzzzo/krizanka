@@ -22,7 +22,7 @@ def wizium_root():
     return os.environ.get("WIZIUM_ROOT", "./Wizium")
 sys.path.append(wizium_root() + "/Wrappers/Python")
 
-from x import add_to_crossword
+from x import add_to_crossword, words, keywords
 
 # ############################################################################
 
@@ -105,7 +105,7 @@ def make_crossword(dictionary):
     with wizium_ctx(alphabet=alphabet) as wiz:
         # Load dictionary
         wiz.dic_clear()
-        n = wiz.dic_add_entries(dictionary)
+        n = wiz.dic_add_entries(sorted(dictionary))
 
         total = sum(map(len, dictionary)) + len(keyword)
         width = min(max(int(math.sqrt(total / 2.5)), len(keyword)), 11)
@@ -176,12 +176,15 @@ def stop(pool):
     global stopping
     stopping = True
 
+def make_dictionary(keyword):
+    _, w = words.only(keyword)
+    return sorted(w)
+
 def generate():
 
-    with open("dictionaries") as f:
-        dicts = tuple(sorted(l.split()) for l in f)
+    k = [w for w, _ in keywords()]
 
-    dicts = random.sample(dicts, len(dicts))
+    dicts = map(make_dictionary, random.sample(k, len(k)))
 
     threading.Thread(target=stop, daemon=True).start()
 
