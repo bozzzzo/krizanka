@@ -250,6 +250,7 @@ class GameLogic extends React.Component {
                 guesses={state.guesses}
                 score={state.score}
                 letters={state.letters}
+                history={state.history}
                 elapsed={state.gameplay.previous + state.gameplay.current}
                 onHint={(x,y) => this.handleHint(x,y)}
                 onGuess={(w) => this.handleGuess(w)}

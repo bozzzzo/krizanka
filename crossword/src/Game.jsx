@@ -5,23 +5,31 @@ import Pad from "./Pad";
 
 class Game extends React.Component {
     renderHistory() {
-    	  return (
+        function renderLi(w, i, a) {
+            return (
+                <span key={w.k}
+                      className={((w.guess) ? "guess" :
+                                  ((w.known) ? "known" : "weird"))}>
+                  {w.w} {w.repeat &&
+                         <span>
+                           {"➰".repeat(w.repeat)}
+                         </span>}
+                  {(i < a.length - 1) && ", "}
+                </span>);
+        }
+        return (
             <div className="c-history">
-				      <ul>
-					      {this.props.history.map((w,i)=>(
-						        <li key={w.k}
-								        className={((w.guess) ? "guess" :
-									                  ((w.known) ? "known" : "weird"))}>
-							        {w.w} {w.repeat &&
-						                 <span>
-                               {"➰".repeat(w.repeat)}
-                             </span>}
-						        </li>))}
-						    <li className="app-version">version: { version }</li>
-				      </ul>
-			      </div>
-        );
-		}
+              <p className="known">
+                {this.props.history.filter((w)=>w.known && !w.guess).map(renderLi)}
+              </p>
+              <hr/>
+              <p className="unknown">
+                {this.props.history.filter((w)=>!w.known && !w.guess).map(renderLi)}
+              </p>
+              <span className="app-version">version: { version }</span>
+            </div>
+        );}
+
 
     render() {
         return (

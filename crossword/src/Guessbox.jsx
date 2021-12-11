@@ -63,7 +63,7 @@ const Guessbox = ({propsLetters, onGuess, onReload, renderHistory, elapsed}) => 
                 />
                 </React.Fragment>
 
-              <span class="elapsed">{elapsed}</span>
+              <span class="elapsed">{Math.floor(elapsed/60)}:{elapsed%60}</span>
             </div>
           <Actions renderHistory={renderHistory}
                    onShuffle={handleShuffle}
