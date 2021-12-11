@@ -1,6 +1,6 @@
 import React from "react";
 
-const Pad = ({pad, rows, cols, hintLimit, handleHint, guesses, score}) => {
+const Pad = ({pad, rows, cols, hintLimit, onHint, guesses, score}) => {
     function renderCell(x,y) {
         let p = pad[[x,y]];
         let k = x;
@@ -11,7 +11,7 @@ const Pad = ({pad, rows, cols, hintLimit, handleHint, guesses, score}) => {
             l="";
         } else if (p.guess === null && (p.hint || 0) < hintLimit) {
             opt.className="cell empty";
-            opt.onClick = e => handleHint(x,y);
+            opt.onClick = e => onHint(x,y);
             l=" ";
         } else if (p.guess === null && (p.hint || 0) >= hintLimit) {
             opt.className="cell";
