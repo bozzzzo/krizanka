@@ -41,4 +41,12 @@
       background-color: var(--c-accent2);
       color: var(--c-primary);
   }
+  &.black {
+      background-color: var(--c-secondary);
+      color: var(--c-primary);
+      svg {
+          width: 5vmin;
+          height: 5vmin;
+      }
+  }
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import {iconBlack} from "./Svg"
 
 const Pad = ({pad, rows, cols, hintLimit, onHint, guesses, score}) => {
     function renderCell(x,y) {
@@ -7,8 +8,8 @@ const Pad = ({pad, rows, cols, hintLimit, onHint, guesses, score}) => {
         let l;
         let opt = {};
         if (p === undefined) {
-            opt.className="cell void";
-            l="";
+            opt.className="cell black";
+            l = iconBlack();
         } else if (p.guess === null && (p.hint || 0) < hintLimit) {
             opt.className="cell empty";
             opt.onClick = e => onHint(x,y);

@@ -6,6 +6,14 @@ export function iconKey() {
 	);
 }
 
+export function iconBlack() {
+	  return (
+		        <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+			      <path d="M0 8L0 56L8 64L56 64L64 56L64 8L56 0L8 0Z" />
+		        </svg>
+	  );
+}
+
 export function iconList () {
 	return (
 		<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
